@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Download, ChevronDown } from 'lucide-react';
-import useApi from '../hooks/useApi';
+import useStaticData from '../hooks/useStaticData';
 import useTyping from '../hooks/useTyping';
 import useDocumentMeta from '../hooks/useDocumentMeta';
 import SocialLinks from '../components/SocialLinks';
@@ -10,8 +10,7 @@ import { defaultProfile, typingRoles } from '../data/defaults';
 import { fileUrl } from '../services/files';
 
 export default function Home() {
-  const { data, loading } = useApi('/profile', defaultProfile);
-  const profile = data || defaultProfile;
+  const { data: profile } = useStaticData(defaultProfile);
   const typed = useTyping(typingRoles);
   useDocumentMeta('', 'Portfolio of Santanu Manna, an aspiring backend developer working with Node.js, Express and MongoDB.');
 
@@ -50,7 +49,7 @@ export default function Home() {
 
       <section id="stats" className="container section">
         <div className="stats">
-          {(loading ? defaultProfile.stats : profile.stats || defaultProfile.stats).map((s, i) => (
+          {(profile.stats || defaultProfile.stats).map((s, i) => (
             <Reveal key={s.label} delay={i * 0.06} className="stat glass">
               <strong>{s.value}</strong>
               <span>{s.label}</span>

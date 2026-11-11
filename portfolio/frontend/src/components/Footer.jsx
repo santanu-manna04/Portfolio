@@ -1,12 +1,11 @@
 import { Link } from 'react-router-dom';
 import { navLinks } from './Navbar';
 import SocialLinks from './SocialLinks';
-import useApi from '../hooks/useApi';
+import useStaticData from '../hooks/useStaticData';
 import { defaultProfile } from '../data/defaults';
 
 export default function Footer() {
-  const { data } = useApi('/profile', defaultProfile);
-  const profile = data || defaultProfile;
+  const { data: profile } = useStaticData(defaultProfile);
   return (
     <footer className="footer">
       <div className="container footer-inner">

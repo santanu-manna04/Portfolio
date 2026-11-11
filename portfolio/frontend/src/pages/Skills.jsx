@@ -2,10 +2,9 @@ import { useState } from 'react';
 import { Code2, Server, Database, Wrench, Layout } from 'lucide-react';
 import SectionHeading from '../components/SectionHeading';
 import FilterBar from '../components/FilterBar';
-import Skeleton from '../components/Skeleton';
 import EmptyState from '../components/EmptyState';
 import Reveal from '../components/Reveal';
-import useApi from '../hooks/useApi';
+import useStaticData from '../hooks/useStaticData';
 import useDocumentMeta from '../hooks/useDocumentMeta';
 import { defaultSkills, skillCategories } from '../data/defaults';
 
@@ -13,7 +12,7 @@ const icons = { 'Programming Languages': Code2, 'Backend Development': Server, D
 
 export default function Skills() {
   useDocumentMeta('Skills', 'Languages, backend technologies, databases and tools I work with.');
-  const { data, loading } = useApi('/skills', defaultSkills);
+  const { data } = useStaticData(defaultSkills);
   const [cat, setCat] = useState('All');
   const skills = (data || []).filter((s) => cat === 'All' || s.category === cat);
 
@@ -21,7 +20,7 @@ export default function Skills() {
     <div className="container section">
       <SectionHeading title="Skills" subtitle="Technologies I use, grouped by area." />
       <FilterBar label="Skill categories" options={['All', ...skillCategories]} value={cat} onChange={setCat} />
-      {loading ? <Skeleton count={6} height={110} /> : skills.length === 0 ? (
+      {skills.length === 0 ? (
         <EmptyState title="No skills in this category" text="Choose another category to see more." />
       ) : (
         <div className="grid skills">

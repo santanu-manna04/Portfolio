@@ -1,9 +1,8 @@
 FROM node:20-alpine AS build
 WORKDIR /app
 COPY package*.json ./
-RUN npm install
+RUN npm ci
 COPY . .
-# Leave VITE_API_URL empty: the browser calls /api on the same domain (nginx proxies it).
 RUN npm run build
 
 FROM nginx:1.27-alpine

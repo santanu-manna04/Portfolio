@@ -1,6 +1,4 @@
-// Content shown until the backend serves it (Phase 3). Pages read it through useApi(),
-// which prefers live API data and falls back to this when the API has none.
-// Replace the social URLs below with your own; the admin Profile editor takes over in Phase 4.
+// Edit this file to update the content displayed throughout the static portfolio.
 export const defaultProfile = {
   name: 'Santanu Manna',
   title: 'Aspiring Backend Developer | Node.js Developer',

@@ -2,11 +2,10 @@ import { useMemo, useState } from 'react';
 import { Github, ExternalLink, Search } from 'lucide-react';
 import SectionHeading from '../components/SectionHeading';
 import FilterBar from '../components/FilterBar';
-import Skeleton from '../components/Skeleton';
 import EmptyState from '../components/EmptyState';
 import Modal from '../components/Modal';
 import Reveal from '../components/Reveal';
-import useApi from '../hooks/useApi';
+import useStaticData from '../hooks/useStaticData';
 import useDocumentMeta from '../hooks/useDocumentMeta';
 import { defaultProjects, projectFilters } from '../data/defaults';
 import { fileUrl } from '../services/files';
@@ -19,7 +18,7 @@ function Thumb({ project }) {
 
 export default function Projects() {
   useDocumentMeta('Projects', 'Backend and full-stack projects built with Node.js, Express and MongoDB.');
-  const { data, loading } = useApi('/projects', defaultProjects);
+  const { data } = useStaticData(defaultProjects);
   const [filter, setFilter] = useState('All Projects');
   const [q, setQ] = useState('');
   const [selected, setSelected] = useState(null);
@@ -49,7 +48,7 @@ export default function Projects() {
         </label>
       </div>
 
-      {loading ? <Skeleton count={2} height={340} /> : list.length === 0 ? (
+      {list.length === 0 ? (
         <EmptyState title="No projects found" text="Try another category or search term." />
       ) : (
         <div className="grid two">

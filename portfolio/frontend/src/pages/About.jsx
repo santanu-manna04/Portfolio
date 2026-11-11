@@ -3,17 +3,15 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { GraduationCap, Target, Download } from 'lucide-react';
 import SectionHeading from '../components/SectionHeading';
 import Reveal from '../components/Reveal';
-import useApi from '../hooks/useApi';
+import useStaticData from '../hooks/useStaticData';
 import useDocumentMeta from '../hooks/useDocumentMeta';
 import { defaultAbout, defaultProfile } from '../data/defaults';
 import { fileUrl } from '../services/files';
 
 export default function About() {
   useDocumentMeta('About', 'Education, learning journey and technical interests of Santanu Manna.');
-  const { data } = useApi('/profile/about', defaultAbout);
-  const { data: p } = useApi('/profile', defaultProfile);
-  const about = data || defaultAbout;
-  const profile = p || defaultProfile;
+  const { data: about } = useStaticData(defaultAbout);
+  const { data: profile } = useStaticData(defaultProfile);
   const [active, setActive] = useState(0);
 
   return (

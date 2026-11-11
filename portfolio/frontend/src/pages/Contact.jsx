@@ -4,34 +4,24 @@ import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
 import { Mail, Linkedin, Github, MapPin, Loader2, CheckCircle2 } from 'lucide-react';
 import SectionHeading from '../components/SectionHeading';
-import useApi from '../hooks/useApi';
+import useStaticData from '../hooks/useStaticData';
 import useDocumentMeta from '../hooks/useDocumentMeta';
-import api from '../services/api';
 import { defaultProfile } from '../data/defaults';
 
-const COOLDOWN_MS = 30000;
 const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default function Contact() {
   useDocumentMeta('Contact', 'Get in touch with Santanu Manna about backend development work.');
-  const { data } = useApi('/profile', defaultProfile);
-  const profile = data || defaultProfile;
+  const { data: profile } = useStaticData(defaultProfile);
   const [sent, setSent] = useState(false);
-  const [lastSent, setLastSent] = useState(0);
   const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm({ mode: 'onTouched' });
 
   const onSubmit = async (values) => {
-    if (values.website) return; // honeypot: real visitors never fill this hidden field
-    if (Date.now() - lastSent < COOLDOWN_MS) return toast.error('Please wait a moment before sending another message.');
-    try {
-      await api.post('/contact', { name: values.name, email: values.email, subject: values.subject, message: values.message });
-      setLastSent(Date.now());
-      setSent(true);
-      reset();
-      toast.success('Message sent. Thank you!');
-    } catch (err) {
-      toast.error(err.response?.data?.message || 'Could not send your message. Please try again later.');
-    }
+    if (!profile.email) return toast.error('Add your email address in src/data/defaults.js first.');
+    const body = `Name: ${values.name}\nReply email: ${values.email}\n\n${values.message}`;
+    window.location.href = `mailto:${profile.email}?subject=${encodeURIComponent(values.subject)}&body=${encodeURIComponent(body)}`;
+    setSent(true);
+    reset();
   };
 
   const field = (name, label, rules, props = {}) => (
@@ -52,8 +42,8 @@ export default function Contact() {
           {sent ? (
             <motion.div className="success" initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}>
               <CheckCircle2 size={56} aria-hidden="true" />
-              <h3>Message sent</h3>
-              <p className="muted">Thanks for reaching out. I will reply as soon as I can.</p>
+              <h3>Email draft ready</h3>
+              <p className="muted">Your email app should open with the message ready to review and send.</p>
               <button className="btn btn-ghost" onClick={() => setSent(false)}>Send another message</button>
             </motion.div>
           ) : (
@@ -62,9 +52,8 @@ export default function Contact() {
               {field('email', 'Email', { required: 'Enter your email', pattern: { value: emailRe, message: 'Enter a valid email address' } }, { type: 'email' })}
               {field('subject', 'Subject', { required: 'Enter a subject', minLength: { value: 3, message: 'Subject is too short' }, maxLength: { value: 120, message: 'Subject is too long' } })}
               {field('message', 'Message', { required: 'Enter a message', minLength: { value: 10, message: 'Message must be at least 10 characters' }, maxLength: { value: 2000, message: 'Message is too long' } }, { as: 'textarea' })}
-              <div className="hp" aria-hidden="true"><label>Website<input tabIndex={-1} autoComplete="off" {...register('website')} /></label></div>
               <button className="btn btn-primary" type="submit" disabled={isSubmitting}>
-                {isSubmitting ? <><Loader2 className="spin" size={18} /> Sending…</> : 'Send Message'}
+                {isSubmitting ? <><Loader2 className="spin" size={18} /> Preparing…</> : 'Open Email App'}
               </button>
             </form>
           )}

@@ -8,12 +8,10 @@ import Certificates from './pages/Certificates';
 import Services from './pages/Services';
 import Contact from './pages/Contact';
 import NotFound from './pages/NotFound';
-import AdminPage from './pages/AdminPage';
 
 export default function App() {
   return (
     <Routes>
-      <Route path="/admin/*" element={<AdminPage />} />
       <Route element={<MainLayout />}>
         <Route index element={<Home />} />
         <Route path="about" element={<About />} />

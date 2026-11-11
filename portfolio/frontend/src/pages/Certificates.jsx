@@ -2,11 +2,10 @@ import { useMemo, useState } from 'react';
 import { Eye, Download, FileText } from 'lucide-react';
 import SectionHeading from '../components/SectionHeading';
 import FilterBar from '../components/FilterBar';
-import Skeleton from '../components/Skeleton';
 import EmptyState from '../components/EmptyState';
 import Modal from '../components/Modal';
 import Reveal from '../components/Reveal';
-import useApi from '../hooks/useApi';
+import useStaticData from '../hooks/useStaticData';
 import useDocumentMeta from '../hooks/useDocumentMeta';
 import { defaultCertificates } from '../data/defaults';
 import { fileUrl } from '../services/files';
@@ -16,7 +15,7 @@ const fmt = (d) => (d ? new Date(d).toLocaleDateString(undefined, { year: 'numer
 
 export default function Certificates() {
   useDocumentMeta('Certificates', 'Courses and certifications earned by Santanu Manna.');
-  const { data, loading } = useApi('/certificates', defaultCertificates);
+  const { data } = useStaticData(defaultCertificates);
   const [cat, setCat] = useState('All');
   const [open, setOpen] = useState(null);
 
@@ -27,7 +26,7 @@ export default function Certificates() {
     <div className="container section">
       <SectionHeading title="Certificates" subtitle="Courses and certifications I have completed." />
       {cats.length > 2 && <FilterBar label="Certificate categories" options={cats} value={cat} onChange={setCat} />}
-      {loading ? <Skeleton count={3} /> : list.length === 0 ? (
+      {list.length === 0 ? (
         <EmptyState title="No certificates yet" text="Certificates will appear here once they are added." />
       ) : (
         <div className="grid three">
