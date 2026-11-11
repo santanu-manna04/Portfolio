@@ -69,3 +69,7 @@ npm run build
 ```
 
 Publish `frontend/dist` to any static hosting provider. Configure the host to serve `index.html` for unknown paths so React Router routes work on refresh. The optional `frontend/Dockerfile` builds and serves the same static site.
+
+### GitHub Pages
+
+The GitHub Actions workflow builds and deploys the site whenever changes are pushed to `main`. In the repository settings, open **Pages** and set the build and deployment source to **GitHub Actions**. The project is configured for the repository URL (`/Portfolio/`) and includes a Pages fallback for client-side routes.
